@@ -145,7 +145,7 @@ class Transistor:
         w = self.w * 1e-4
         l = self.l * 1e-4
         ld = self.ld * 1e-4
-        return self.cox * w * (l + 2 * ld)
+        return self.cox * w * (l + 2 * ld) + 2 * self.cox * w * ld
 
     def spice_print(self, print_return):
         spice_string = self.id + ' ' + self.drain + ' ' + self.gate + ' ' + self.source + ' ' + self.substrate + ' '
@@ -172,8 +172,6 @@ class Transistor:
 
 
 if __name__ == "__main__":
-    # t1 = Transistor(20, 2, uo=600, tox=50, vto=0.4, nsub=1e16)
-    # t1 = Transistor(20, 2, tox=60, ld=0.5, vto=0.85, plambda=0.05, xj=0.8)
     t1 = Transistor('M1', "NM1", ['VDD', '1', '0', '0'], 5, 2, transistor_type='N', nsub=2e15,
                     nsubsw=4e16, nds=1e19, tox=45, xj=1, lend=10, lens=10)
     t1.spice_print(True)

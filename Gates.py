@@ -102,15 +102,20 @@ class Nand:
     def get_eq_wlp(self):
         return self.tp1.w / self.tp1.l
 
+    def calculate_int_loac_c(self, v1, v2):
+        cload = 2 * self.tp1.calculate_cdb(v1, v2) + 3 * self.tn1.calculate_cdb(v1, v2)
+        cload += self.tp1.calculate_cg() + self.tn1.calculate_cg()
+        return cload
+
     def calculate_tphl(self, vcc, cload):
-        cload += 2 * self.tp1.calculate_cdb(vcc, vcc * 0.5) + 2 * self.tn1.calculate_cdb(vcc, vcc * 0.5)
+        cload += self.calculate_int_loac_c(vcc, vcc * 0.5)
         v_dif = vcc - self.tn1.vto
         v_div = self.tn1.vto / v_dif
         f_div = cload / (self.get_eq_wln() * self.tn1.kp * v_dif)
         return f_div * (2 * v_div + math.log(4 * v_dif / vcc - 1))
 
     def calculate_tplh(self, vcc, cload):
-        cload += 2 * self.tp1.calculate_cdb(0.0, vcc * 0.5) + 2 * self.tn1.calculate_cdb(0.0, vcc * 0.5)
+        cload += self.calculate_int_loac_c(0, vcc * 0.5)
         v_dif = vcc - abs(self.tp1.vto)
         v_div = abs(self.tp1.vto) / v_dif
         f_div = cload / (self.get_eq_wlp() * self.tp1.kp * v_dif)
@@ -151,7 +156,7 @@ class NANDAnd:
         self.gate2.spice_print()
 
     def calculate_delay(self, vcc, c):
-        gate2_c = self.gate2.calculate_gc()
+        gate2_c = 2 * self.gate2.calculate_gc()
         gate1_delay = self.gate1.calculate_delay(vcc, gate2_c)
         gate2_delay = self.gate2.calculate_delay(vcc, c)
         return gate1_delay + gate2_delay
@@ -239,8 +244,8 @@ class NANDxor:
         gate1_delay = self.gate1.calculate_delay(vcc, gate2_3_c)
         gate4_c = self.gate4.calculate_gc()
         gate2_delay = self.gate1.calculate_delay(vcc, gate4_c)
-        gate3_delay = self.gate3.calculate_delay(vcc, c)
-        return gate1_delay + gate2_delay + gate3_delay
+        gate4_delay = self.gate4.calculate_delay(vcc, c)
+        return gate1_delay + gate2_delay + gate4_delay
 
     def __str__(self):
         return self.id
