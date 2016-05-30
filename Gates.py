@@ -254,6 +254,36 @@ class NANDxor:
         return str(self)
 
 
+class NANDInverter:
+    def __init__(self, a, output, name, tp, tn):
+        self.an = None
+        self.bn = None
+        self.outputn = None
+
+        self.id = name
+        self.gate1 = Nand(a, a, output, name + 'G1', tp, tn)
+
+    def spice_print(self):
+        self.gate1.spice_print()
+
+    def calculate_gc(self):
+        return 2 * self.gate1.calculate_gc()
+
+    def calculate_delay(self, vcc, c):
+        return self.gate1.calculate_delay(vcc, c)
+
+    def set_nodes(self, a, b, out):
+        self.an = a
+        self.bn = b
+        self.outputn = out
+
+    def __str__(self):
+        return self.id
+
+    def __repr__(self):
+        return str(self)
+
+
 def nand_inverter(input, output, name, tp, tn):
     return Nand(input, input, output, name, tp, tn)
 

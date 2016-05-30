@@ -139,7 +139,7 @@ def read_circuit(address, tp, tn, nodes):
                 in1 = nodes.add_node(line[1])
                 out1 = nodes.add_node(line[2])
 
-                gates.append(Gates.nand_inverter(line[1], line[2], line[3], tp, tn))
+                gates.append(Gates.NANDInverter(line[1], line[2], line[3], tp, tn))
 
                 in1.add_inputs(gates[-1])
                 out1.set_output(gates[-1])
